@@ -11,7 +11,6 @@ object Database {
     private val dataSource: DataSource
 
     init {
-        println(System.getenv("DATABASE_URL"))
         val config = HikariConfig().apply {
             driverClassName = "org.postgresql.Driver"
             jdbcUrl = dotenv["DATABASE_URL"]
@@ -26,4 +25,6 @@ object Database {
 
         dataSource = HikariDataSource(config)
     }
+
+    fun getConnection() = dataSource.connection
 }
