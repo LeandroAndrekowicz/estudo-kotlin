@@ -1,21 +1,26 @@
 package br.com.api
 
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
+import br.com.api.br.com.api.leandro.module
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.*
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.cors.routing.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import java.sql.Connection
-import java.sql.DriverManager
-import org.jetbrains.exposed.sql.*
+import kotlinx.serialization.json.Json
+
+fun main() {
+    embeddedServer(Netty, 8080, host = "0.0.0.0", module = Application::module)
+        .start(wait = true)
+}
 
 fun Application.configureSerialization() {
-    routing {
-        get("/json/kotlinx-serialization") {
-            call.respond(mapOf("hello" to "world"))
-        }
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+            ignoreUnknownKeys = true
+            encodeDefaults = false
+            explicitNulls = false
+        })
     }
 }

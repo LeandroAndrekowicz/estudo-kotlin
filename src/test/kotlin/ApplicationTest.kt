@@ -1,5 +1,6 @@
 package br.com.api
 
+import br.com.api.br.com.api.leandro.module
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.server.testing.*
