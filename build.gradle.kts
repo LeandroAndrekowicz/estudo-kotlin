@@ -22,6 +22,7 @@ dependencies {
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.netty)
     implementation(libs.logback.classic)
+    implementation("org.jetbrains.exposed:exposed-java-time:0.52.0")
     implementation(libs.hikaricp)
     implementation(libs.dotenv)
     implementation(libs.ktor.server.config.yaml)
