@@ -1,7 +1,8 @@
-package br.com.api.routes
+package br.com.api.br.com.api.leandro.routes
 
-import br.com.api.services.Produto
-import br.com.api.services.ProdutoService
+import br.com.api.br.com.api.leandro.services.dtos.CreateProductDto
+import br.com.api.br.com.api.leandro.services.models.Produto
+import br.com.api.br.com.api.leandro.services.ProdutoService
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -11,7 +12,9 @@ fun Route.produtoRoutes() {
     val produtoService = ProdutoService()
 
     route("/produtos") {
-        get { call.respond(produtoService.getAll()) }
+        get {
+            call.respond(produtoService.getAll())
+        }
 
         get("{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
@@ -22,7 +25,14 @@ fun Route.produtoRoutes() {
         }
 
         post {
-            val produto = call.receive<Produto>()
+            println("Create produtos")
+            val body = call.receive<CreateProductDto>()
+            val produto = Produto(
+                nome = body.nome,
+                unidade = body.unidade,
+                quantidade = body.quantidade,
+                preco = body.preco.toBigDecimal()
+            )
             val novoProduto = produtoService.create(produto)
             call.respond(HttpStatusCode.Created, novoProduto)
         }

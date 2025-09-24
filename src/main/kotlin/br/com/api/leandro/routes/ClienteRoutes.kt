@@ -1,7 +1,8 @@
-package br.com.api.routes
+package br.com.api.br.com.api.leandro.routes
 
+import br.com.api.br.com.api.leandro.services.dtos.CreateClientDto
 import br.com.api.br.com.api.leandro.services.models.Cliente
-import br.com.api.services.ClienteService
+import br.com.api.br.com.api.leandro.services.ClienteService
 import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -11,7 +12,9 @@ fun Route.clienteRoutes() {
     val service = ClienteService()
 
     route("/clientes") {
-        get { call.respond(service.getAll()) }
+        get {
+            call.respond(service.getAll())
+        }
 
         get("{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
@@ -22,9 +25,28 @@ fun Route.clienteRoutes() {
         }
 
         post {
-            val cliente = call.receive<Cliente>()
-            call.respond(HttpStatusCode.Created, service.create(cliente))
+            try {
+                val body = call.receive<CreateClientDto>()
+                val cliente = Cliente(
+                    cpf = body.cpf,
+                    nome = body.nome,
+                    rua = body.rua,
+                    bairro = body.bairro,
+                    cidade = body.cidade,
+                    estado = body.estado,
+                    uf = body.uf,
+                    telefone = body.telefone,
+                    email = body.email
+                )
+                val novoCliente = service.create(cliente)
+                call.respond(HttpStatusCode.Created, novoCliente)
+            } catch (e: IllegalArgumentException) {
+                call.respond(HttpStatusCode.Conflict, e.message ?: "Erro ao criar cliente")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, e.message ?: "Erro interno")
+            }
         }
+
 
         put("{id}") {
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)

@@ -1,4 +1,4 @@
-package br.com.api.database.tables
+package br.com.api.br.com.api.leandro.database.tables
 
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.datetime

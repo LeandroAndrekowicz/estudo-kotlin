@@ -1,4 +1,4 @@
-package br.com.api.services
+package br.com.api.br.com.api.leandro.services
 
 import br.com.api.br.com.api.leandro.database.Database
 import br.com.api.br.com.api.leandro.services.models.Cliente
@@ -53,6 +53,11 @@ class ClienteService {
     }
 
     fun create(cliente: Cliente): Cliente {
+        val existing = getByCpf(cliente.cpf)
+        if (existing != null) {
+            throw IllegalArgumentException("Cliente com CPF ${cliente.cpf} já existe")
+        }
+
         Database.getConnection().use { conn ->
             val stmt = conn.prepareStatement(
                 "INSERT INTO clientes (cpf,nome,rua,bairro,cidade,estado,uf,telefone,email) VALUES (?,?,?,?,?,?,?,?,?) RETURNING id"
@@ -96,6 +101,28 @@ class ClienteService {
             val stmt = conn.prepareStatement("DELETE FROM clientes WHERE id=?")
             stmt.setInt(1, id)
             return stmt.executeUpdate() > 0
+        }
+    }
+
+    fun getByCpf(cpf: String): Cliente? {
+        Database.getConnection().use { conn ->
+            val stmt = conn.prepareStatement("SELECT * FROM clientes WHERE cpf = ?")
+            stmt.setString(1, cpf)
+            val rs = stmt.executeQuery()
+            return if (rs.next()) {
+                Cliente(
+                    id = rs.getInt("id"),
+                    cpf = rs.getString("cpf"),
+                    nome = rs.getString("nome"),
+                    rua = rs.getString("rua"),
+                    bairro = rs.getString("bairro"),
+                    cidade = rs.getString("cidade"),
+                    estado = rs.getString("estado"),
+                    uf = rs.getString("uf"),
+                    telefone = rs.getString("telefone"),
+                    email = rs.getString("email")
+                )
+            } else null
         }
     }
 }

@@ -1,5 +1,8 @@
 package br.com.api.br.com.api.leandro.services.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Cliente(
     val id: Int? = null,
     val cpf: String,

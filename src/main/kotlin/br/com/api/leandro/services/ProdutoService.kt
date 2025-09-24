@@ -1,15 +1,7 @@
-package br.com.api.services
+package br.com.api.br.com.api.leandro.services
 
 import br.com.api.br.com.api.leandro.database.Database
-import java.math.BigDecimal
-
-data class Produto(
-    val id: Int? = null,
-    val nome: String,
-    val unidade: String,
-    val quantidade: Int,
-    val preco: BigDecimal
-)
+import br.com.api.br.com.api.leandro.services.models.Produto
 
 class ProdutoService {
 
@@ -57,11 +49,14 @@ class ProdutoService {
             val stmt = conn.prepareStatement(
                 "INSERT INTO produtos (nome, unidade, quantidade, preco) VALUES (?, ?, ?, ?) RETURNING id"
             )
+
             stmt.setString(1, produto.nome)
             stmt.setString(2, produto.unidade)
             stmt.setInt(3, produto.quantidade)
             stmt.setBigDecimal(4, produto.preco)
+
             val rs = stmt.executeQuery()
+
             if (rs.next()) {
                 return produto.copy(id = rs.getInt("id"))
             } else {

@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import javax.sql.DataSource
 import io.github.cdimascio.dotenv.dotenv
+import java.sql.Connection
 import org.jetbrains.exposed.sql.Database as ExposedDatabase
 
 val dotenv = dotenv()
@@ -27,7 +28,7 @@ object Database {
         dataSource = HikariDataSource(config)
     }
 
-    fun getConnection() = dataSource.connection
+    fun getConnection(): Connection = dataSource.connection
 
     fun connect() {
         ExposedDatabase.connect(dataSource)
